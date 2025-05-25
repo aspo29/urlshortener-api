@@ -3,5 +3,4 @@ node_modules/
 docker.log
 npm-debug.log
 .DS_Store
-Dockerfile
 **/.DS_Store
