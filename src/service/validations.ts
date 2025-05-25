@@ -25,7 +25,7 @@ const validateBody = async (
 export const validateCreateShortURL = async (body: RequestBody) =>
   validateBody(body, {
     url: "required|url",
-    id: "string|min:5|max:10|not_in:urls,visit,auth,login,register",
+    id: "string|min:5|max:10|not_in:urls,visit,auth,login,register,docs",
   });
 
 
