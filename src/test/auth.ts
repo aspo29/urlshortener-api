@@ -37,7 +37,7 @@ const loginAndFetchUrls = async () => {
     // Step 3: Optionally, you can create, update, or delete URLs
     const urlsResp = await axios.post(
       "http://localhost:3000/urls",
-      { url: "https://chatgpt.com/" },
+      { url: "https://openai.com/" },
       {
         headers: {
           Authorization: `Bearer ${token}`,

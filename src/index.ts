@@ -55,7 +55,7 @@ import { swaggerSpec } from "./config/swagger"; // adjust path
 // }
 
 const app = new Koa();
-
+const swaggerRouter = new Router();
 const PORT = Number(process.env.PORT) || 3000;
 
 
@@ -70,10 +70,34 @@ app.use(async (ctx, next) => {
   }
 });
 app.use(cors());
+// app.use(router.routes());
+// app.use(router.allowedMethods());
+
+/* --- SWAGGER: must come before main router --- */
+
+// Serve Swagger JSON
+swaggerRouter.get("/swagger.json", async (ctx) => {
+  ctx.body = swaggerSpec;
+});
+app.use(swaggerRouter.routes()).use(swaggerRouter.allowedMethods());
+
+// Serve Swagger UI
+app.use(
+  koaSwagger({
+    routePrefix: "/docs",
+    swaggerOptions: {
+      url: "/swagger.json",
+    },
+  })
+);
+
+/* --- MAIN ROUTES --- */
+//the you the swagger ui plz move the app body parser and helmet to the top
 app.use(helmet());
 app.use(bodyParser());
-app.use(router.routes());
-app.use(router.allowedMethods());
+app.use(router.routes()).use(router.allowedMethods());
+
+/* --- FALLBACK (optional) --- */
 
 // Hello World fallback route
 app.use(async (ctx) => {
@@ -81,6 +105,7 @@ app.use(async (ctx) => {
     ctx.body = "Hello World";
   }
 });
+
 
 const main = async () => {
   try {
@@ -114,26 +139,6 @@ const main = async () => {
 };
 
 main();
-
-const swaggerRouter = new Router();
-
-// Serve Swagger JSON
-swaggerRouter.get("/swagger.json", async (ctx) => {
-  ctx.body = swaggerSpec;
-});
-
-// Serve Swagger UI
-app.use(
-  koaSwagger({
-    routePrefix: "/docs", // Swagger UI at http://localhost:3000/docs
-    swaggerOptions: {
-      url: "/swagger.json",
-    },
-  })
-);
-
-app.use(swaggerRouter.routes()).use(swaggerRouter.allowedMethods());
-app.use(router.routes()).use(router.allowedMethods());
 
 // onDatabaseConnect()
 //   .then(() => {
